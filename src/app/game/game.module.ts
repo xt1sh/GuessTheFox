@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { GameComponent } from './game-component/game.component';
 import { RouterModule } from '@angular/router';
 import { routes } from './game.routes';
+import { GameRoutingModule } from './game-routing.module';
 
 @NgModule({
   imports: [
-    RouterModule.forChild(routes),
-    CommonModule
+    CommonModule,
+    GameRoutingModule
   ],
   exports: [
     RouterModule
