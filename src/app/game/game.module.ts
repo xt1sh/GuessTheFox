@@ -4,6 +4,8 @@ import { GameComponent } from './game-component/game.component';
 import { RouterModule } from '@angular/router';
 import { routes } from './game.routes';
 import { GameRoutingModule } from './game-routing.module';
+import { WikipediaService } from './services/wikipedia.service';
+import { ImageService } from './services/image.service';
 
 @NgModule({
   imports: [
@@ -13,6 +15,7 @@ import { GameRoutingModule } from './game-routing.module';
   exports: [
     RouterModule
   ],
-  declarations: [GameComponent]
+  declarations: [GameComponent],
+  providers: [WikipediaService, ImageService]
 })
 export class GameModule { }
