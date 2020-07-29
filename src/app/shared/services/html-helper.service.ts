@@ -20,16 +20,14 @@ export class HtmlHelperService {
     }
     return [span.textContent || span.innerText].toString().replace(/ +/g,' ');
   };
-  
+
   removeNumberTags(str: string): string {
-    return str.replace(/\[([0-9]|[1-9][0-9]|[1-9][0-9][0-9])\]/g, '');
+    return str ? str.replace(/\[([0-9]|[1-9][0-9]|[1-9][0-9][0-9])\]/g, '') : '';
   }
 
   getSectionName(str: string): string {
-    console.log(str)
     if (str) {
-      console.log(str.split('\n')[0])
-      return str.split('\n')[0];
+      return str.split('\n')[0] || '';
     }
     return '';
   }

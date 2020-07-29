@@ -1,12 +1,17 @@
 import { Injectable } from '@angular/core';
+import { Observable, from } from 'rxjs';
+import * as wiki from '@drumtj/wiki';
+import { tap, map } from 'rxjs/operators';
 
 @Injectable()
 export class ImageService {
 
   constructor() { }
 
-  async getImageSrc(name: string): Promise<string> {
-    return 'https://icdn.lenta.ru/images/2016/10/19/21/20161019212444332/detail_f6c6be29b37a404acdf29da02a0eaecf.jpg';
+  getImageSrc(name: string): Observable<string> {
+    return from(wiki.images(name)).pipe(
+			map((res: any) => res.pages[0].imageinfo[0].url),
+		);
   }
 
 }

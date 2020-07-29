@@ -11,7 +11,7 @@ export class GameComponent implements OnInit {
   constructor(private wiki: WikipediaService) { }
 
   ngOnInit() {
-    this.wiki.getRandomQuestion().subscribe(res => console.log(res));
+    this.wiki.getRandomQuestion().subscribe(console.log);
   }
 
 }

@@ -126,6 +126,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "GuessTheFox"
+    }
+  },
+  "defaultProject": "GuessTheFox",
+  "cli": {
+    "analytics": "b3c904d8-5e44-424f-b74c-b6849ad1faf2"
+  }
 }
