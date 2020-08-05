@@ -1,12 +1,12 @@
-<div class="container">
+<div class="container" *ngIf="question">
   <div class="animal-image-container">
-    <img class="animal-image" src="assets/6lHrjcLCVTI.jpg">
+    <img class="animal-image" [src]="question.imageUrl">
     <div class="overlay">
-      <div class="overlay-text">Дмитрий (Гоблин) Пучков</div>
+      <div class="overlay-text">{{ question.keyWord }}</div>
     </div>
   </div>
-  <mat-button-toggle-group name="quiz" *ngIf="question">
-    <mat-button-toggle class="question" value="i" *ngFor="let quest of question.options; index as i">
+  <mat-button-toggle-group [(value)]="inputValue" name="quiz">
+    <mat-button-toggle class="question" [value]="i" *ngFor="let quest of question.options; index as i">
       {{ quest.encryptedText }}
     </mat-button-toggle>
   </mat-button-toggle-group>
