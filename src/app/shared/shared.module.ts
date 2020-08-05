@@ -5,7 +5,6 @@ import { MatButtonToggleModule} from '@angular/material/button-toggle';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 const matModules = [
-  BrowserAnimationsModule,
   MatButtonToggleModule,
   MatButtonModule
 ]
@@ -16,6 +15,7 @@ const matModules = [
     matModules
   ],
   exports: [
+		CommonModule,
     matModules
   ],
   declarations: []

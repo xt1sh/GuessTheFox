@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
-import { from, Observable, pipe } from 'rxjs';
-import { map, tap, flatMap } from 'rxjs/operators'
+import { Injectable, Query } from '@angular/core';
+import { from, Observable, pipe, Subscription, forkJoin } from 'rxjs';
+import { map, tap, flatMap, filter } from 'rxjs/operators'
 import animalsList from '../../../assets/animals.en.json';
 import * as wiki from '@drumtj/wiki';
 import { HtmlHelperService } from '../../shared/services/html-helper.service';
@@ -26,48 +26,48 @@ export class WikipediaService {
 	}
 
   getRandomQuestion(): Observable<Question> {
-    let rand = Math.random() * animalsList.length;
-    let word = animalsList[Math.floor(rand)];
-		return from(wiki.sections(word) as Promise<any>).pipe(
-      map((sections: any) => {
-				let categories = sections
-					.filter((sec: any) => this.categories.includes(this.htmlHelper.getSectionName(sec.innerText)))
-          .map((sec: any) => this.htmlHelper.extractContent(sec));
-        let question: Question = {
-          encryptedText: this.encryptText(this.htmlHelper.removeNumberTags(categories[0].split('.')[0]), [word]),
-          keyWord: word,
-          options: [
-            {
-              imageUrl: '',
-              word: word,
-              isRight: true
-            },
-            {
-              imageUrl: '',
-              word: animalsList[Math.floor(Math.random() * animalsList.length)],
-              isRight: false
-            }
-          ]
+		let words = animalsList.sort(() => Math.random() - Math.random()).slice(0, 2);
+		let question: Question = {
+			keyWord: words[0],
+			imageUrl: '',
+			options: [
+				{
+					word: words[0],
+					isRight: true,
+					encryptedText: ''
+				},
+				{
+					word: words[1],
+					isRight: false,
+					encryptedText: ''
 				}
-        return question;
-			}),
-			flatMap((question: Question) => {
-				return from(question.options).pipe(
-					flatMap((opt: QuestionOption) => {
-						return this.imageService.getImageSrc(opt.word).pipe(
-							map(imageSrc => { return { imageSrc: imageSrc, word: opt.word } }),
-						);
-					}),
-					map(res => {
-						question.options.filter(opt => opt.word === res.word)[0].imageUrl = res.imageSrc;
-						return question;
-					}),
+			]
+		}
+
+		return from(question.options).pipe(
+			flatMap((opt: QuestionOption) => {
+				return from(wiki.sections(opt.word)).pipe(
+					map((sections: any[]) =>
+						sections.filter((sec: any) => this.categories.includes(this.htmlHelper.getSectionName(sec.innerText)))[0]
+					),
+					map((sec: any) => this.htmlHelper.extractContent(sec)),
+					map((sec: string) => this.encryptText(this.htmlHelper.removeNumberTags(sec.split('.')[0]), [opt.word])),
+					map((encryptedText: string) => { return { encryptedText: encryptedText, word: opt.word } })
 				);
+			}),
+			map((res: { encryptedText: string, word: string }) => {
+				question.options.filter(opt => opt.word === res.word)[0].encryptedText = res.encryptedText;
+				return question;
+			}),
+			flatMap((quest: Question) => this.imageService.getImageSrc(quest.keyWord)),
+			map((imageUrl: string) => {
+				question.imageUrl = imageUrl;
+				return question;
 			})
-    );
+		);
   }
 
-  encryptText(text: string, params?: string[]): string {
+  private encryptText(text: string, params?: string[]): string {
 		if (!params || !params.length) {
 			return text;
 		}
@@ -81,5 +81,5 @@ export class WikipediaService {
 			}
 		});
 		return words.join(' ');
-  }
+	}
 }

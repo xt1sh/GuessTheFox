@@ -18,7 +18,7 @@ export class HtmlHelperService {
         (children[i] as HTMLElement).innerText += ' ';
       }
     }
-    return [span.textContent || span.innerText].toString().replace(/ +/g,' ');
+    return (span.textContent || span.innerText).toString().replace(/ +/g,' ');
   };
 
   removeNumberTags(str: string): string {

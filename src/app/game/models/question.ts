@@ -1,7 +1,7 @@
 import { QuestionOption } from "./question-option";
 
 export interface Question {
-	encryptedText: string;
 	keyWord: string;
+	imageUrl: string;
 	options: QuestionOption[];
 }

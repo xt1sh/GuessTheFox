@@ -5,9 +5,9 @@
       <div class="overlay-text">Дмитрий (Гоблин) Пучков</div>
     </div>
   </div>
-  <mat-button-toggle-group name="quiz">
+  <mat-button-toggle-group name="quiz" *ngIf="question">
     <mat-button-toggle class="question" value="i" *ngFor="let quest of question.options; index as i">
-      {{ quest.word }}
+      {{ quest.encryptedText }}
     </mat-button-toggle>
   </mat-button-toggle-group>
 </div>
