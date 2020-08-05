@@ -6,8 +6,8 @@
     </div>
   </div>
   <mat-button-toggle-group name="quiz">
-    <mat-button-toggle class="question" value="i" *ngFor="let question of questions; index as i">
-      {{question}}
+    <mat-button-toggle class="question" value="i" *ngFor="let quest of question.options; index as i">
+      {{ quest.word }}
     </mat-button-toggle>
   </mat-button-toggle-group>
 </div>
