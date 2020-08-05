@@ -1,3 +1,13 @@
-<p>
-  game works!
-</p>
+<div class="container">
+  <div class="animal-image-container">
+    <img class="animal-image" src="assets/6lHrjcLCVTI.jpg">
+    <div class="overlay">
+      <div class="overlay-text">Дмитрий (Гоблин) Пучков</div>
+    </div>
+  </div>
+  <mat-button-toggle-group name="quiz">
+    <mat-button-toggle class="question" value="i" *ngFor="let question of questions; index as i">
+      {{question}}
+    </mat-button-toggle>
+  </mat-button-toggle-group>
+</div>

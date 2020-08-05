@@ -8,8 +8,8 @@ import { WikipediaService } from '../services/wikipedia.service';
 })
 export class GameComponent implements OnInit {
 
+  questions: Array<string> = ["question 1", "question 2"];
   constructor(private wiki: WikipediaService) { }
-
   ngOnInit() {
     // this.wiki.getRandomArticle().subscribe(res => console.log(res))
   }
