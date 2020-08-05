@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { WikipediaService } from '../services/wikipedia.service';
+import { Question } from '../models/question';
 
 @Component({
   selector: 'app-game',
@@ -8,10 +9,11 @@ import { WikipediaService } from '../services/wikipedia.service';
 })
 export class GameComponent implements OnInit {
 
-  questions: Array<string> = ["question 1", "question 2"];
+	question: Question;
+
   constructor(private wiki: WikipediaService) { }
   ngOnInit() {
-    // this.wiki.getRandomArticle().subscribe(res => console.log(res))
+    this.wiki.getRandomQuestion().subscribe(question => this.question = question);
   }
 
 }
