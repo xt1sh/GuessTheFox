@@ -23,19 +23,18 @@ export class WikipediaService {
   setLocalization(lang?: string) {
     this.localization = lang;
     wiki.setLanguage(lang);
-  }
+	}
 
   getRandomQuestion(): Observable<Question> {
     let rand = Math.random() * animalsList.length;
     let word = animalsList[Math.floor(rand)];
-    console.log(animalsList.splice(rand, 1))
 		return from(wiki.sections(word) as Promise<any>).pipe(
       map((sections: any) => {
 				let categories = sections
 					.filter((sec: any) => this.categories.includes(this.htmlHelper.getSectionName(sec.innerText)))
           .map((sec: any) => this.htmlHelper.extractContent(sec));
         let question: Question = {
-          encryptedText: this.encryptText(this.htmlHelper.removeNumberTags(categories[0])),
+          encryptedText: this.encryptText(this.htmlHelper.removeNumberTags(categories[0].split('.')[0]), [word]),
           keyWord: word,
           options: [
             {
@@ -68,7 +67,19 @@ export class WikipediaService {
     );
   }
 
-  encryptText(text: string, params?): string {
-    return text;
+  encryptText(text: string, params?: string[]): string {
+		if (!params || !params.length) {
+			return text;
+		}
+		let words = text.split(' ');
+		params.forEach(param => {
+			for (let i = 0; i < words.length; i++) {
+				let word = words[i];
+				if (word.toLowerCase().includes(param.toLowerCase())) {
+					words[i] = '___';
+				}
+			}
+		});
+		return words.join(' ');
   }
 }
