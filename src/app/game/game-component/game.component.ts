@@ -2,11 +2,12 @@ import { Component, OnInit, HostListener, ComponentFactoryResolver, AfterViewIni
 import { WikipediaService } from '../services/wikipedia.service';
 import { Question } from '../models/question';
 import { UtilsService } from '../../shared/services/utils.service';
-import { Subject, BehaviorSubject } from 'rxjs';
+import { Subject, BehaviorSubject, Observable } from 'rxjs';
 import * as Hammer from 'hammerjs';
 import { HammerModule } from '@angular/platform-browser';
 import { MatButtonToggleGroup } from '@angular/material/button-toggle';
 import { connectableObservableDescriptor } from 'rxjs/internal/observable/ConnectableObservable';
+import { map } from 'rxjs/operators';
 
 
 @Component({
@@ -15,31 +16,30 @@ import { connectableObservableDescriptor } from 'rxjs/internal/observable/Connec
   styleUrls: ['./game.component.css']
 })
 export class GameComponent implements OnInit, AfterViewInit {
-	@ViewChild('quizArea', {static: false}) 
+	@ViewChild('quizArea', {static: false})
 	quizArea: any;
 
-	public isMobile: boolean;
-	public showQuiz: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-
-	private _inputValue: number;
-	get inputValue(): number {
-		return this._inputValue;
-	}
-	set inputValue(value: number) {
-		this._inputValue = value;
-		this.chooseOption(value);
-	}
-
 	question: Question;
+	nextQuestion: Question;
+	isMobile: boolean;
+	showQuiz: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
 	constructor(private wiki: WikipediaService,
 		private utils: UtilsService ) { }
 
   ngOnInit() {
-		this.inputValue = undefined;
-		this.setNewQuestion();
-		this.isMobile = window.innerWidth < 768;		
+		let questionObs = this.getNewQuestion().subscribe(
+			quest => this.question = quest,
+			null,
+			() => questionObs.unsubscribe()
+		);
+		let nextQuestionObs = this.getNewQuestion().subscribe(
+			quest => this.nextQuestion = quest,
+			null,
+			() => nextQuestionObs.unsubscribe()
+		);
+		this.isMobile = window.innerWidth < 768;
 		this.showQuiz = new BehaviorSubject<boolean>(false);
-
 	}
 
 	async ngAfterViewInit() {
@@ -61,13 +61,13 @@ export class GameComponent implements OnInit, AfterViewInit {
 		mc.on("swipeup", (e) => this.onSwipeUp(e));
 		mc.on("swipedown", (e) => this.onSwipeDown(e));
 	}
-	setNewQuestion(): void {
-		let sub = this.wiki.getRandomQuestion().subscribe(
-			question => {
+
+	getNewQuestion(): Observable<Question> {
+		return this.wiki.getRandomQuestion().pipe(
+			map(question => {
 				question.options = this.utils.shuffle(question.options);
-				this.question = question;
-			},
-			null, () => { sub.unsubscribe() }
+				return question;
+			})
 		);
 	}
 
@@ -75,12 +75,17 @@ export class GameComponent implements OnInit, AfterViewInit {
 		if (!this.question || i == null) {
 			return;
 		}
+		this.question = this.nextQuestion;
+		let nextQuestionObs = this.getNewQuestion().subscribe(
+			quest => this.nextQuestion = quest,
+			null,
+			() => nextQuestionObs.unsubscribe()
+		);
 		if (this.question.options[i].isRight) {
 			alert('gj');
 		} else {
 			alert('loh');
 		}
-		this.ngOnInit();
 	}
 
 	onSwipeUp(event: any): void {
