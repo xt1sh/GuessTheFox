@@ -6,17 +6,19 @@ import { SharedModule } from '../shared/shared.module';
 import { ImageService } from './services/image.service';
 import { WikipediaService } from './services/wikipedia.service';
 
+
 @NgModule({
   imports: [
     RouterModule.forChild(routes),
-    SharedModule
+    SharedModule,
   ],
   exports: [
     RouterModule
 	],
 	providers: [
 		ImageService,
-		WikipediaService
+    WikipediaService,
+    
 	],
   declarations: [GameComponent]
 })
