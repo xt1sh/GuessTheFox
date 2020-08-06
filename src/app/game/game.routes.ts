@@ -3,7 +3,7 @@ import { GameComponent } from './game-component/game.component'
 
 export const routes: Routes = [
 	{
-		path: 'g',
+		path: '',
 		component: GameComponent
 	}
 ]
