@@ -47,11 +47,19 @@ export class WikipediaService {
 		return from(question.options).pipe(
 			flatMap((opt: QuestionOption) => {
 				return from(wiki.sections(opt.word)).pipe(
-					map((sections: any[]) =>
-						sections.filter((sec: any) => this.categories.includes(this.htmlHelper.getSectionName(sec.innerText)))[0]
+					map((sections: any[]) => {
+						question.keyWord = question.keyWord.replace('_', ' ');
+						let content = sections.filter((sec: any) =>
+							this.categories.includes(this.htmlHelper.getSectionName(sec.innerText))
+						)[0]
+						if (content) {
+							return content;
+						}
+						return sections[Math.floor(Math.random() * (sections.length - 2) + 1)];
+					}
 					),
 					map((sec: any) => this.htmlHelper.extractContent(sec)),
-					map((sec: string) => this.encryptText(this.htmlHelper.removeNumberTags(sec.split('.')[0]), [opt.word])),
+					map((sec: string) => this.encryptText(this.htmlHelper.removeNumberTags(sec.split('.')[0]), opt.word.split(' '))),
 					map((encryptedText: string) => { return { encryptedText: encryptedText, word: opt.word } })
 				);
 			}),
