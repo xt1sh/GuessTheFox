@@ -128,7 +128,6 @@ export class GameComponent implements OnInit, OnDestroy {
 		}
 		this.isImageLoaded.next(false);
 		if (this.nextQuestion.value) {
-			console.log(0)
 			this.question = this.nextQuestion.value;
 			this.nextQuestion.next(null);
 			this.subscription.add(
