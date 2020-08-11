@@ -12,7 +12,7 @@ import { QuestionOption } from '../models/question-option';
 export class WikipediaService {
 
 	categories: string[] = ['Etymology', 'In culture', 'History', 'Species']
-	excludeCategories: string[] = []
+	excludeCategories: string[] = ['References', 'Gallery']
 
   localization: string;
 
@@ -49,7 +49,6 @@ export class WikipediaService {
 			flatMap((opt: QuestionOption) => {
 				return from(wiki.sections(opt.word)).pipe(
 					map((sections: any[]) => {
-						question.keyWord = question.keyWord.replace('_', ' ');
 						let filteredSections = sections.filter((sec: any) => {
 							let sectionName = this.htmlHelper.getSectionName(sec.innerText);
 							return this.categories.includes(sectionName);
@@ -75,7 +74,7 @@ export class WikipediaService {
 				question.options.filter(opt => opt.word === res.word)[0].encryptedText = res.encryptedText;
 				return question;
 			}),
-			flatMap((quest: Question) => this.imageService.getImageSrc(quest.keyWord)),
+			flatMap((quest: Question) => this.imageService.getImageSrc(question.keyWord.replace(' ', '_'))),
 			map((imageUrl: string) => {
 				question.imageUrl = imageUrl;
 				return question;
@@ -91,8 +90,8 @@ export class WikipediaService {
 		params.forEach(param => {
 			for (let i = 0; i < words.length; i++) {
 				let word = words[i];
-				if (word.toLowerCase().includes(param.toLowerCase())) {
-					words[i] = '___';
+				if (word.toUpperCase().trim().includes(param.toUpperCase().trim())) {
+					words[i] = '?';
 				}
 			}
 		});
