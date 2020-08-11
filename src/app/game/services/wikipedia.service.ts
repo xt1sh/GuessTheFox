@@ -11,7 +11,8 @@ import { QuestionOption } from '../models/question-option';
 @Injectable()
 export class WikipediaService {
 
-  categories: string[] = ['Etymology', 'In culture', 'History', 'Species']
+	categories: string[] = ['Etymology', 'In culture', 'History', 'Species']
+	excludeCategories: string[] = []
 
   localization: string;
 
@@ -49,15 +50,22 @@ export class WikipediaService {
 				return from(wiki.sections(opt.word)).pipe(
 					map((sections: any[]) => {
 						question.keyWord = question.keyWord.replace('_', ' ');
-						let content = sections.filter((sec: any) =>
-							this.categories.includes(this.htmlHelper.getSectionName(sec.innerText))
-						)[0]
-						if (content) {
-							return content;
+						let filteredSections = sections.filter((sec: any) => {
+							let sectionName = this.htmlHelper.getSectionName(sec.innerText);
+							return this.categories.includes(sectionName);
+						});
+						if (filteredSections?.length) {
+							let value = filteredSections[Math.floor(Math.random() * filteredSections.length)];
+							if (value) {
+								return value;
+							}
 						}
-						return sections[Math.floor(Math.random() * (sections.length - 2) + 1)];
-					}
-					),
+						filteredSections = sections.filter((sec: any) => {
+							let sectionName = this.htmlHelper.getSectionName(sec.innerText);
+							return sectionName && !this.excludeCategories.includes(sectionName);
+						});
+						return filteredSections[Math.floor(Math.random() * filteredSections.length)];
+					}),
 					map((sec: any) => this.htmlHelper.extractContent(sec)),
 					map((sec: string) => this.encryptText(this.htmlHelper.removeNumberTags(sec.split('.')[0]), opt.word.split(' '))),
 					map((encryptedText: string) => { return { encryptedText: encryptedText, word: opt.word } })

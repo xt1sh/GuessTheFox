@@ -1,23 +1,26 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
-import { MatButtonToggleModule} from '@angular/material/button-toggle';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { LoaderComponent } from './components/loader/loader.component';
 
 const matModules = [
   MatButtonToggleModule,
-  MatButtonModule
+	MatButtonModule,
+	MatProgressSpinnerModule
 ]
 
 @NgModule({
   imports: [
-    CommonModule,
+		CommonModule,
     matModules
   ],
   exports: [
 		CommonModule,
+		LoaderComponent,
     matModules
   ],
-  declarations: []
+  declarations: [LoaderComponent]
 })
 export class SharedModule { }

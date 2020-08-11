@@ -8,6 +8,9 @@ export class HtmlHelperService {
   constructor() { }
 
   extractContent(content: Node): string {
+		if (!content) {
+			return '';
+		}
     var span = document.createElement('span');
     span.innerHTML = content.textContent;
     var children = span.querySelectorAll('*');
