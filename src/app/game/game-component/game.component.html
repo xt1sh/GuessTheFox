@@ -1,11 +1,11 @@
-<div class="container" *ngIf="question">
+<div class="container" [hidden]="!question">
   <div class="animal-image-container">
-    <img class="animal-image" [src]="question.imageUrl">
+    <img #image class="animal-image" [src]="question?.imageUrl">
     <div #overlay class="overlay" [class.fullscreen]="showQuiz | async" >
-			<div class="overlay-text">{{ question.keyWord }}</div>
+			<div class="overlay-text">{{ question?.keyWord }}</div>
 			<div *ngIf="isMobile">
 				<mat-button-toggle-group #quizArea name="quiz" class="quiz-area" *ngIf="!(showQuiz | async)">
-					<mat-button-toggle class="question" [value]="i" (click)="chooseOption(i)" *ngFor="let quest of question.options; index as i">
+					<mat-button-toggle class="question" [value]="i" (click)="chooseOption(i)" *ngFor="let quest of question?.options; index as i">
 						<span>{{ quest.encryptedText }}</span>
 					</mat-button-toggle>
 				</mat-button-toggle-group>
@@ -14,12 +14,12 @@
 	</div>
 	<div *ngIf="!isMobile">
 		<mat-button-toggle-group name="quiz" class="quiz-area">
-			<mat-button-toggle class="question" [value]="i" (click)="chooseOption(i)" *ngFor="let quest of question.options; index as i">
+			<mat-button-toggle class="question" [value]="i" (click)="chooseOption(i)" *ngFor="let quest of question?.options; index as i">
 				<span>{{ quest.encryptedText }}</span>
 			</mat-button-toggle>
 		</mat-button-toggle-group>
 	</div>
 </div>
-<div class="decoy" *ngIf="nextQuestion?.imageUrl">
-	<img class="decoy-img" [src]="nextQuestion.imageUrl">
+<div class="decoy" *ngIf="(nextQuestion | async)?.imageUrl">
+	<img class="decoy-img" [src]="(nextQuestion | async).imageUrl">
 </div>
