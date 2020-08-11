@@ -1,11 +1,18 @@
 <div class="container" *ngIf="question">
   <div class="animal-image-container">
+    <span class="mobile-keyword" *ngIf="isMobile">{{question.keyWord}}</span>
     <img class="animal-image" [src]="question.imageUrl">
-    <div id="overlay" class="overlay" [class.fullscreen]="showQuiz | async" >
-      <div class="overlay-text">{{ question.keyWord }}</div>
-      <mat-button-toggle-group #quizArea name="quiz" class="quiz-area" *ngIf="isMobile && showQuiz | async">
-        <mat-button-toggle class="question" [value]="i" (click)="chooseOption(i)" *ngFor="let quest of question.options; index as i">
-          <span>{{ quest.encryptedText }}</span>
+    <div id="overlay" class="overlay">
+      <div class="overlay-text">{{ !isMobile ? question.keyWord : '' }}
+        <div *ngIf="isMobile" class="mobile-questions-area">
+          <div class="question-text" *ngFor="let quest of question.options; index as i">
+            <span>{{i + 1}}. {{ quest.encryptedText }}</span>
+          </div>
+        </div>
+      </div>
+      <mat-button-toggle-group #quizArea name="quiz" class="quiz-area" *ngIf="isMobile">
+        <mat-button-toggle class="choose-option-button"  [value]="i" (click)="chooseOption(i)" *ngFor="let number of [1, 2]; index as i">
+          <span>{{ number }}</span>
         </mat-button-toggle>
       </mat-button-toggle-group>
     </div>
