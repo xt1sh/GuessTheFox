@@ -5,6 +5,7 @@ import { routes } from './game.routes';
 import { SharedModule } from '../shared/shared.module';
 import { ImageService } from './services/image.service';
 import { WikipediaService } from './services/wikipedia.service';
+import { ScoreService } from './services/score.service';
 
 
 @NgModule({
@@ -18,7 +19,7 @@ import { WikipediaService } from './services/wikipedia.service';
 	providers: [
 		ImageService,
     WikipediaService,
-    
+    ScoreService
 	],
   declarations: [GameComponent]
 })
